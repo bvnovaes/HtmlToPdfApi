@@ -1,0 +1,6 @@
+@HtmlToPdfApi_HostAddress = http://localhost:5091
+
+GET {{HtmlToPdfApi_HostAddress}}/html2pdf/
+Accept: application/json
+
+###
