@@ -1,7 +1,6 @@
-using HtmlToPdfApi.Infrastructure.Services;
+using HtmlToPdfApi.Core.Interfaces;
 using Moq;
 using WkHtmlToPdfDotNet;
-using WkHtmlToPdfDotNet.Contracts;
 
 namespace HtmlToPdfApiTests
 {
@@ -11,20 +10,19 @@ namespace HtmlToPdfApiTests
         public async Task ConvertHtmlToPdf_ShouldReturnPdfBytes()
         {
             // Arrange
-            var mockConverter = new Mock<IConverter>();
-            var htmlToPdfService = new HtmlToPdfService(mockConverter.Object);
+            var mockService = new Mock<IHtmlToPdfService>();
             var orientation = Orientation.Portrait;
             var paperKind = PaperKind.A4;
+            var htmlContent = "<html><body><h1>Hello, world!</h1></body></html>";
 
             // Simule a conversão (substitua pelo comportamento real do DinkToPdf)
             var expectedPdfBytes = new byte[] { 1, 2, 3 };
-            mockConverter.Setup(c => c.Convert(It.IsAny<HtmlToPdfDocument>()))
-                         .Returns(expectedPdfBytes);
+            mockService.Setup(c => c.ConvertHtmlToPdfAsync(It.IsAny<string>(), orientation, paperKind)).ReturnsAsync(expectedPdfBytes);
 
-            var htmlContent = "<html><body><h1>Hello, world!</h1></body></html>";
-
+            
             // Act
-            var pdfBytes = await htmlToPdfService.ConvertHtmlToPdfAsync(htmlContent, orientation, paperKind);
+            var htmlConverter = mockService.Object;
+            var pdfBytes = await htmlConverter.ConvertHtmlToPdfAsync(htmlContent, orientation, paperKind);
 
             // Assert
             Assert.NotNull(pdfBytes);
